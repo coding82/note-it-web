@@ -1,28 +1,47 @@
 .App {
   text-align: center;
+
 }
 
-.App-logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 80px;
+.total {
+  display: flex;
+  justify-content: center;
+  flex-direction: row;
 }
 
-.App-header {
-  background-color: #222;
-  height: 150px;
-  padding: 20px;
+.postsNtrash {
+  margin: 20px;
+}
+
+.allPostsContainer {
+  background-color: rgba(255, 145, 145, 0.769);
   color: white;
+  width: 500px;
 }
 
-.App-title {
-  font-size: 1.5em;
+.allPosts {
+  background-color: rgba(254, 97, 97, 0.769);
+  height: 500px;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  overflow: auto;
 }
 
-.App-intro {
-  font-size: large;
+.singlePost {
+  background-color: rgba(248, 70, 70, 0.769);
+  margin: 10px;
 }
 
-@keyframes App-logo-spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+.allTrashContainer {
+  background-color: rgba(147, 147, 247, 0.708);
+  color: white;
+  width: 500px;
+}
+
+.allTrash {
+  height: 500px;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
 }

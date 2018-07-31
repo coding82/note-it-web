@@ -1,12 +1,13 @@
 import axios from 'axios';
-const server = 'https://server-note-it.herokuapp.com/';
+const server = 'https://server-note-it.herokuapp.com';
 
 //get
 const GET_USERS = 'GET_USERS'
-const getUsers = users => ({type: GET_USERS}, users)
+const getUsers = users => ({type: GET_USERS, users})
 export const ThunkGetUsers = () => dispatch =>
   axios.get(`${server}/api/users`)
-    .then( res => dispatch(getUsers(res.data)))
+    .then( res => res.data)
+    .then( data => dispatch(getUsers(data)))
     .catch( err => console.error('Error from fetching all users', err))
 
 /* server code
@@ -20,7 +21,7 @@ router.get('/', (req, res, next) => {
 */
 
 const SINGLE_USER = 'SINGLE_USER'
-const singleUser = user => ({type: SINGLE_USER}, user)
+const singleUser = user => ({type: SINGLE_USER, user})
 export const ThunkSingleUser = userId => dispatch =>
   axios.get(`${server}/api/users/${userId}`)
     .then( res => dispatch(singleUser(res.data)))
@@ -38,7 +39,7 @@ router.get('/:id',(req, res, next) => {
 
 //post
 const NEW_USER = 'NEW_USER'
-const newUser = user => ({type: NEW_USER}, user)
+const newUser = user => ({type: NEW_USER, user})
 export const ThunkNewUser = user => dispatch =>
   axios.post(`${server}/api/users`, user)
     .then( res => dispatch(newUser(res.data)))
@@ -57,7 +58,7 @@ router.post('/', (req, res, next) => {
 
 //put (user)
 const NEW_POST = 'NEW_POST'
-const newPost = user => ({type: NEW_POST}, user)
+const newPost = user => ({type: NEW_POST, user})
 export const ThunkNewPost = (userId, content) => dispatch =>
   axios.put(`${server}/api/users/${userId}/newpost`, content)
     .then( res => dispatch(newPost(res.data)))
@@ -76,7 +77,7 @@ router.put('/:id/newpost', (req, res, next) => {
 
 
 const EDIT_POST = 'EDIT_POST'
-const editPost = user => ({type: EDIT_POST}, user)
+const editPost = user => ({type: EDIT_POST, user})
 export const ThunkEditPost = (userId, postId, content) => dispatch =>
   axios.put(`${server}/api/users/${userId}`, { content, postId })
     .then( res => dispatch(editPost(res.data)))
@@ -100,7 +101,7 @@ router.put('/:id/editone', (req, res, next) => {
 
 //put (user)
 const ONE_TO_TRASH = 'ONE_TO_TRASH'
-const oneToTrash = user => ({type: ONE_TO_TRASH}, user)
+const oneToTrash = user => ({type: ONE_TO_TRASH, user})
 export const ThunkOneToTrash = (userId, postId) => dispatch => {
   axios.put(`${server}/api/users/${userId}/onetotrash`, postId)
     .then( res => dispatch(oneToTrash(res.data)))
@@ -131,7 +132,7 @@ router.put('/:id/onetotrash', (req, res, next) => {
 */
 
 const EMPTY_TRASH = 'EMPTY_TRASH'
-const emptyTrash = user => ({type: EMPTY_TRASH}, user)
+const emptyTrash = user => ({type: EMPTY_TRASH, user})
 export const ThunkEmptyTrash = userId => dispatch =>
   axios.put(`${server}/api/users/${userId}/emptytrash`)
     .then( res => dispatch(emptyTrash(res.data)))
@@ -149,7 +150,7 @@ router.put('/:id/emptytrash', (req, res, next) => {
 
 
 const EMPTY_POSTS = 'EMPTY_POSTS'
-const emptyPosts = user => ({type: EMPTY_POSTS}, user)
+const emptyPosts = user => ({type: EMPTY_POSTS, user})
 export const ThunkEmptyPosts = userId => dispatch =>
   axios.put(`${server}/api/users/${userId}/emptyposts`)
     .then( res => dispatch(emptyPosts(res.data)))
@@ -165,24 +166,10 @@ router.put('/:id/emptyposts', (req, res, next) => {
 
 */
 
-export default ( state = {} , action) => {
+export default ( state = [] , action) => {
   switch(action.type) {
     case GET_USERS:
         return action.users
-    case SINGLE_USER:
-        return action.user
-    case NEW_USER:
-        return action.user
-    case NEW_POST:
-        return action.user
-    case EDIT_POST:
-        return action.user
-    case ONE_TO_TRASH:
-        return action.user
-    case EMPTY_POSTS:
-        return action.user
-    case EMPTY_TRASH:
-    return action.user
     default:
         return state;
   }

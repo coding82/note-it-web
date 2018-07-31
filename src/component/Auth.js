@@ -1,4 +1,5 @@
 import React from 'react';
+import {auth} from 'firebase/app';
 
 export default class Auth extends React.Component {
     constructor(){
@@ -9,6 +10,8 @@ export default class Auth extends React.Component {
       }
       this.handleChange = this.handleChange.bind(this)
       this.handleSubmit = this.handleSubmit.bind(this)
+      this.handleSignup = this.handleSignup.bind(this)
+      this.handleLogin = this.handleLogin.bind(this)
     }
 
     handleChange(event){
@@ -18,23 +21,32 @@ export default class Auth extends React.Component {
 
     handleSubmit(event){
       event.preventDefault()
-      console.log(this.state)
-      this.setState({email: '', password: ''})
+
+    }
+
+    handleLogin(){
+      const { email, password } = this.state
+
+    }
+
+    handleSignup(){
+      const { email, password } = this.state
+
     }
 
     render(){
       return(
         <div>
-          <form action="" onSubmit={this.handleSubmit}>
-            <label for="">email:</label>
+          <form onSubmit={this.handleSubmit}>
+            <label for="email">email:</label>
             <input type="text" name="email" value={this.state.email} onChange={this.handleChange}/>
 
-            <label for="">password:</label>
+            <label for="password">password:</label>
             <input type="text" name="password" value={this.state.password} onChange={this.handleChange} />
 
-            <input type="submit" value="login"/>
-            <input type="submit" value="signup"/>
-            <input type="submit" value="logout"/>
+            <input onClick={this.handleLogin} type="submit" name="login" value="login"/>
+            <input onClick={this.hadleSignup} type="submit" name="signup" value="signup"/>
+            <input type="submit" name="logout" value="logout"/>
           </form>
         </div>
       )

@@ -1,26 +1,30 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-class AllPosts extends React.Component {
+class AllTrash extends React.Component {
 
   render(){
     const { user } = this.props
     return(
       <div className="postsNtrash">
 
-        <div className="allPostsContainer">
+        <div className="allTrashContainer">
         <h1>ALL POSTS</h1>
 
-        <div className="allPosts">
+        <div className="allTrash">
         {
-          user && user.posts.map( (a, i) => {
+          user &&
+          user.trash.length > 0
+          ? user.trash.map( (a, i) => {
             return (
-              <div className="singlePost" key={a[i]}>
+              <div className="singleTrash" key={a[i]}>
                 <h3>{a}</h3>
-                <button>delete</button>
               </div>
             )
           })
+          :   <div>
+                <h3>The trash is empty</h3>
+              </div>
         }
         </div>
         </div>
@@ -38,4 +42,4 @@ const mapState = state => {
 };
 
 
-export default connect(mapState)(AllPosts)
+export default connect(mapState)(AllTrash)
