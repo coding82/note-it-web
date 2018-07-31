@@ -4,7 +4,7 @@ const server = 'https://server-note-it.herokuapp.com/';
 //get
 const GET_USERS = 'GET_USERS'
 const getUsers = users => ({type: GET_USERS}, users)
-export const getUsersThunk = () => dispatch =>
+export const ThunkGetUsers = () => dispatch =>
   axios.get(`${server}/api/users`)
     .then( res => dispatch(getUsers(res.data)))
     .catch( err => console.error('Error from fetching all users', err))
@@ -21,7 +21,7 @@ router.get('/', (req, res, next) => {
 
 const SINGLE_USER = 'SINGLE_USER'
 const singleUser = user => ({type: SINGLE_USER}, user)
-export const singleUserThunk = userId => dispatch =>
+export const ThunkSingleUser = userId => dispatch =>
   axios.get(`${server}/api/users/${userId}`)
     .then( res => dispatch(singleUser(res.data)))
     .catch( err => console.error('Error from fetching single user', err))
@@ -39,9 +39,9 @@ router.get('/:id',(req, res, next) => {
 //post
 const NEW_USER = 'NEW_USER'
 const newUser = user => ({type: NEW_USER}, user)
-export const newUserThunk = user => dispatch =>
+export const ThunkNewUser = user => dispatch =>
   axios.post(`${server}/api/users`, user)
-    .then( res => dispatch(createUser(res.data)))
+    .then( res => dispatch(newUser(res.data)))
     .catch( err => console.error('Error from creating a new USER', err))
 /* server code
 ## req.body needed
@@ -58,7 +58,7 @@ router.post('/', (req, res, next) => {
 //put (user)
 const NEW_POST = 'NEW_POST'
 const newPost = user => ({type: NEW_POST}, user)
-export const newPostThunk = (userId, content) => dispatch =>
+export const ThunkNewPost = (userId, content) => dispatch =>
   axios.put(`${server}/api/users/${userId}/newpost`, content)
     .then( res => dispatch(newPost(res.data)))
     .catch( err => console.error('Error from creating a new POST', err))
@@ -77,7 +77,7 @@ router.put('/:id/newpost', (req, res, next) => {
 
 const EDIT_POST = 'EDIT_POST'
 const editPost = user => ({type: EDIT_POST}, user)
-export const editPostThunk = (userId, postId, content) => dispatch =>
+export const ThunkEditPost = (userId, postId, content) => dispatch =>
   axios.put(`${server}/api/users/${userId}`, { content, postId })
     .then( res => dispatch(editPost(res.data)))
     .catch( err => console.error('Error from editing a POST', err))
@@ -101,7 +101,7 @@ router.put('/:id/editone', (req, res, next) => {
 //put (user)
 const ONE_TO_TRASH = 'ONE_TO_TRASH'
 const oneToTrash = user => ({type: ONE_TO_TRASH}, user)
-export const oneToTrashThunk = (userId, postId) => dispatch => {
+export const ThunkOneToTrash = (userId, postId) => dispatch => {
   axios.put(`${server}/api/users/${userId}/onetotrash`, postId)
     .then( res => dispatch(oneToTrash(res.data)))
     .catch( err => console.error('Error from move a post to TRASH', err))
@@ -132,7 +132,7 @@ router.put('/:id/onetotrash', (req, res, next) => {
 
 const EMPTY_TRASH = 'EMPTY_TRASH'
 const emptyTrash = user => ({type: EMPTY_TRASH}, user)
-export const emptyTrashThunk = userId => dispatch =>
+export const ThunkEmptyTrash = userId => dispatch =>
   axios.put(`${server}/api/users/${userId}/emptytrash`)
     .then( res => dispatch(emptyTrash(res.data)))
     .catch( err => console.error('Error from emptying the TRASH bin', err))
@@ -150,7 +150,7 @@ router.put('/:id/emptytrash', (req, res, next) => {
 
 const EMPTY_POSTS = 'EMPTY_POSTS'
 const emptyPosts = user => ({type: EMPTY_POSTS}, user)
-export const emptyPostsThunk = userId => dispatch =>
+export const ThunkEmptyPosts = userId => dispatch =>
   axios.put(`${server}/api/users/${userId}/emptyposts`)
     .then( res => dispatch(emptyPosts(res.data)))
     .catch( err => console.error('Error from emptying the POSTS bin', err))
