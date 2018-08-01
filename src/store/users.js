@@ -170,6 +170,11 @@ export default ( state = [] , action) => {
   switch(action.type) {
     case GET_USERS:
         return action.users
+    case SINGLE_USER:
+        return action.user;
+    case ONE_TO_TRASH:
+        console.log(action.user, action.user.posts, action.user.trash)
+        //return { ...action.user, posts: action.user.posts, trash: action.user.trash}
     default:
         return state;
   }

@@ -1,9 +1,8 @@
 import React from 'react';
 import { withRouter, Route, Switch } from 'react-router-dom';
 import { connect } from 'react-redux';
-// import { ThunkEditPost, ThunkEmptyPosts, ThunkEmptyTrash, ThunkGetUsers, ThunkNewPost, ThunkNewUser, ThunkOneToTrash, ThunkSingleUser } from '../store';
-import {  ThunkGetUsers } from '../store';
-import {  Home, AllPosts, Auth } from './index';
+import {ThunkGetUsers } from '../store';
+import {  Home, AllPosts  } from './index';
 
 class Routes extends React.Component {
 
@@ -14,13 +13,13 @@ class Routes extends React.Component {
   render(){
     return(
     <Switch>
-        <Route exact path="/" component={Home}/>
-        <Route exact path="/posts" component={AllPosts}/>
-{/*
+        <Route exact path="/users/:id" render={(props) => <Home {...props} users={this.props.users} />} />
+      {/*
+        <Route exact path= component={SingleUser}/>
         <Route path="/" component={Home}/>
         <Route exact path="/users" component={AllUsers}/>
-        <Route exact path="/users/:id" component={SingleUser}/> */}
 
+      */}
     </Switch>
     )
   }

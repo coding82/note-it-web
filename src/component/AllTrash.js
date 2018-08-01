@@ -5,11 +5,12 @@ class AllTrash extends React.Component {
 
   render(){
     const { user } = this.props
+    console.log(user)
     return(
       <div className="postsNtrash">
 
         <div className="allTrashContainer">
-        <h1>ALL POSTS</h1>
+        <h1>ALL Trash</h1>
 
         <div className="allTrash">
         {
@@ -17,7 +18,7 @@ class AllTrash extends React.Component {
           user.trash.length > 0
           ? user.trash.map( (a, i) => {
             return (
-              <div className="singleTrash" key={a[i]}>
+              <div className="singleTrash" key={i}>
                 <h3>{a}</h3>
               </div>
             )
@@ -35,9 +36,9 @@ class AllTrash extends React.Component {
   }
 }
 
-const mapState = state => {
+const mapState = (state, ownProps) => {
   return {
-    user: state.users[0]
+    user: state.users.length && state.users.find( person => person.id === +ownProps.id)
   };
 };
 

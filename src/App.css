@@ -7,6 +7,7 @@
   display: flex;
   justify-content: center;
   flex-direction: row;
+  flex-wrap: wrap;
 }
 
 .postsNtrash {
@@ -33,6 +34,12 @@
   margin: 10px;
 }
 
+.singleTrash {
+  background-color: rgba(87, 87, 237, 0.708);
+  margin: 10px;
+
+}
+
 .allTrashContainer {
   background-color: rgba(147, 147, 247, 0.708);
   color: white;
@@ -44,4 +51,5 @@
   display: flex;
   justify-content: center;
   flex-direction: column;
+  overflow: auto;
 }
