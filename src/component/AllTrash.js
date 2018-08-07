@@ -1,11 +1,28 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { ThunkRestoreOne, ThunkRestoreAll } from '../store';
+
 
 class AllTrash extends React.Component {
+  constructor(){
+    super()
+
+    this.restoreOne = this.restoreOne.bind(this)
+    this.restoreAll = this.restoreAll.bind(this)
+  }
+
+  restoreOne(postId){
+    this.props.ThunkRestoreOne(postId)
+  }
+
+  restoreAll(){
+    this.props.ThunkRestoreAll()
+  }
+
 
   render(){
-    const { user } = this.props
-    console.log(user)
+    const { users } = this.props
+      console.log(this.props)
     return(
       <div className="postsNtrash">
 
@@ -14,12 +31,14 @@ class AllTrash extends React.Component {
 
         <div className="allTrash">
         {
-          user &&
-          user.trash.length > 0
-          ? user.trash.map( (a, i) => {
+          users &&
+          users.trash &&
+          users.trash.length > 0
+          ? users.trash.map( (a, i) => {
             return (
               <div className="singleTrash" key={i}>
-                <h3>{a}</h3>
+                <h3>{a[0]}</h3>
+                <button onClick={() => this.restoreOne(i)}>restore this</button>
               </div>
             )
           })
@@ -38,9 +57,17 @@ class AllTrash extends React.Component {
 
 const mapState = (state, ownProps) => {
   return {
-    user: state.users.length && state.users.find( person => person.id === +ownProps.id)
+    users: state.users
   };
 };
 
+const mapDispatch = (dispatch, ownProps) => {
+  const id = +ownProps.id
+  return {
+    ThunkRestoreOne: (postId) => dispatch(ThunkRestoreOne(id, postId)),
+    ThunkRestoreAll: () => dispatch(ThunkRestoreAll())
 
-export default connect(mapState)(AllTrash)
+  }
+}
+
+export default connect(mapState, mapDispatch)(AllTrash)

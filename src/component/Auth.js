@@ -1,10 +1,12 @@
 import React from 'react';
 import {auth} from 'firebase/app';
+import fire from '../config/Fire';
 
 export default class Auth extends React.Component {
     constructor(){
       super()
       this.state = {
+        redirect: false,
         email: '',
         password: ''
       }
@@ -21,7 +23,12 @@ export default class Auth extends React.Component {
 
     handleSubmit(event){
       event.preventDefault()
-
+      console.table([{
+        email: this.state.email,
+        password: this.state.password
+      }])
+      fire.auth().signInWithEmailAndPassword(this.state.email, this.state.password)
+        .then(()=>{}).catch( err => console.log(err))
     }
 
     handleLogin(){
@@ -37,6 +44,7 @@ export default class Auth extends React.Component {
     render(){
       return(
         <div>
+
           <form onSubmit={this.handleSubmit}>
             <label for="email">email:</label>
             <input type="text" name="email" value={this.state.email} onChange={this.handleChange}/>

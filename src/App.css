@@ -18,6 +18,7 @@
   background-color: rgba(255, 145, 145, 0.769);
   color: white;
   width: 500px;
+  overflow: auto;
 }
 
 .allPosts {
@@ -44,6 +45,7 @@
   background-color: rgba(147, 147, 247, 0.708);
   color: white;
   width: 500px;
+  overflow: auto;
 }
 
 .allTrash {

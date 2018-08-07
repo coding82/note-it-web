@@ -10,15 +10,18 @@ class AllPosts extends React.Component {
     this.moveToTrash = this.moveToTrash.bind(this);
   }
 
+  componentDidMount(){
+    this.props.ThunkSingleUser()
+  }
 
   moveToTrash(postId){
-    this.props.ThunkOneToTrash(this.props.user.id, postId)
+    console.log(postId)
+    this.props.ThunkOneToTrash(postId)
 
   }
 
   render(){
-    const { user } = this.props
-    console.log(user)
+    const { users } = this.props
     return(
       <div className="postsNtrash">
 
@@ -27,13 +30,15 @@ class AllPosts extends React.Component {
 
         <div className="allPosts">
         {
-          user &&
-          user.posts.slice(0).reverse().map( (a, i) => {
+          users &&
+          users.posts &&
+          users.posts
+          .map( (a, i) => {
             return (
-              <div className="singlePost" key={user.posts.indexOf(a)}>
+              <div className="singlePost" key={users.posts.indexOf(a)}>
 
-                <h3>{a}</h3>
-                <button onClick={() => this.moveToTrash(user.posts.indexOf(a))}>delete</button>
+                <h3>{a[0]}</h3>
+                <button onClick={() => this.moveToTrash(i)}>delete</button>
               </div>
             )
           })
@@ -49,13 +54,15 @@ class AllPosts extends React.Component {
 
 const mapState = (state, ownProps) => {
   return {
-    user: state.users.length && state.users.find( a => a.id == +ownProps.id)
+    users: state.users
   };
 };
 
 const mapDispatch = (dispatch, ownProps) => {
+  const userId = +ownProps.id;
   return {
-    ThunkOneToTrash: (userId, postId) => dispatch(ThunkOneToTrash(userId, postId))
+    ThunkOneToTrash: postId => dispatch(ThunkOneToTrash(userId, postId)),
+    ThunkSingleUser: () => dispatch(ThunkSingleUser(userId))
   }
 }
 

@@ -30,7 +30,7 @@ class NewPost extends React.Component {
     return(
       <form onSubmit={this.handleSubmit}>
         <label>content</label>
-        <input onChange={this.handleChange} type="textarea" />
+        <input onChange={this.handleChange} type="textarea" value={this.state.content}/>
         <button>submit</button>
       </form>
     )
