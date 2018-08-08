@@ -91,8 +91,8 @@ export const ThunkEmptyTrash = userId => dispatch =>
 
 const DELETE_ONE_FOREVER = 'DELETE_ONE_FOREVER'
 const deleteOne = user => ({type: DELETE_ONE_FOREVER, user})
-export const ThunkDeleteOne = userId => dispatch =>
-  axios.put(`${server}/api/users/${userId}/deleteoneforever`)
+export const ThunkDeleteOne = (userId, postId) => dispatch =>
+  axios.put(`${server}/api/users/${userId}/deleteoneforever`, postId)
     .then( res => dispatch(deleteOne(res.data)))
     .catch( err => console.error('Error from emptying the TRASH bin', err))
 
