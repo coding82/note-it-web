@@ -1,64 +1,98 @@
-import React from 'react';
-import {auth} from 'firebase/app';
-import fire from '../config/Fire';
+import React from 'react'
+import {connect} from 'react-redux'
+import PropTypes from 'prop-types'
+import {auth} from '../store'
 
-export default class Auth extends React.Component {
-    constructor(){
-      super()
-      this.state = {
-        redirect: false,
-        email: '',
-        password: ''
-      }
-      this.handleChange = this.handleChange.bind(this)
-      this.handleSubmit = this.handleSubmit.bind(this)
-      this.handleSignup = this.handleSignup.bind(this)
-      this.handleLogin = this.handleLogin.bind(this)
+/**
+ * COMPONENT
+ */
+export class AuthForm extends React.Component {
+
+  constructor(){
+    super()
+    this.state = {
+      email: "",
+      password: ""
     }
 
-    handleChange(event){
-      this.setState({[event.target.name]: event.target.value })
-      console.log(this.state)
-    }
+    this.handleSubmit = this.handleSubmit.bind(this)
+    this.handleChange = this.handleChange.bind(this)
+  }
 
-    handleSubmit(event){
-      event.preventDefault()
-      console.table([{
-        email: this.state.email,
-        password: this.state.password
-      }])
-      fire.auth().signInWithEmailAndPassword(this.state.email, this.state.password)
-        .then(()=>{}).catch( err => console.log(err))
-    }
+  handleChange(event){
+    this.setState({[event.target.name]: event.target.value})
+  }
 
-    handleLogin(){
-      const { email, password } = this.state
+  handleSubmit(evt){
+    evt.preventDefault()
+    const {email, password} = this.state
+    this.props.auth(email, password, this.props.name)
+  }
 
-    }
+  render(){
+    const {name, displayName, handleSubmit, error} = this.props
 
-    handleSignup(){
-      const { email, password } = this.state
 
-    }
+  return (
+    <div>
 
-    render(){
-      return(
+      <form onSubmit={this.handleSubmit} name={name}>
         <div>
-
-          <form onSubmit={this.handleSubmit}>
-            <label for="email">email:</label>
-            <input type="text" name="email" value={this.state.email} onChange={this.handleChange}/>
-
-            <label for="password">password:</label>
-            <input type="text" name="password" value={this.state.password} onChange={this.handleChange} />
-
-            <input onClick={this.handleLogin} type="submit" name="login" value="login"/>
-            <input onClick={this.hadleSignup} type="submit" name="signup" value="signup"/>
-            <input type="submit" name="logout" value="logout"/>
-          </form>
+          <label htmlFor="email"><small>Email</small></label>
+          <input onChange={this.handleChange} name="email" type="text" value={this.state.email} />
         </div>
-      )
+        <div>
+          <label htmlFor="password"><small>Password</small></label>
+          <input onChange={this.handleChange} name="password" type="password" value={this.state.password}/>
+        </div>
+        <div>
+          <button type="submit">{displayName}</button>
+        </div>
+        {error && error.response && <div> {error.response.data} </div>}
+      </form>
 
-    }
+    </div>
+  )
+}}
 
+
+/**
+ * CONTAINER
+ *   Note that we have two different sets of 'mapStateToProps' functions -
+ *   one for Login, and one for Signup. However, they share the same 'mapDispatchToProps'
+ *   function, and share the same Component. This is a good example of how we
+ *   can stay DRY with interfaces that are very similar to each other!
+ */
+export const mapLogin = (state) => {
+  return {
+    name: 'login',
+    displayName: 'Login',
+
+  }
+}
+
+const mapSignup = (state) => {
+  return {
+    name: 'signup',
+    displayName: 'Sign Up',
+  }
+}
+
+const mapDispatch = (dispatch) => {
+  return {
+    auth: (email, password, formName) => dispatch(auth(email, password, formName))
+
+  }
+}
+
+export const Login = connect(mapLogin, mapDispatch)(AuthForm)
+export const Signup = connect(mapSignup, mapDispatch)(AuthForm)
+
+/**
+ * PROP TYPES
+ */
+AuthForm.propTypes = {
+  name: PropTypes.string.isRequired,
+  displayName: PropTypes.string.isRequired,
+  error: PropTypes.object
 }

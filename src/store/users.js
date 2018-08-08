@@ -1,5 +1,8 @@
+import history from '../history'
 import axios from 'axios';
-const server = 'https://server-note-it.herokuapp.com';
+//const server = 'https://server-note-it.herokuapp.com';
+const server = 'http://localhost:8080';
+
 
 // users //
 const GET_USERS = 'GET_USERS'
@@ -12,10 +15,32 @@ export const ThunkGetUsers = () => dispatch =>
 
 const SINGLE_USER = 'SINGLE_USER'
 const singleUser = user => ({type: SINGLE_USER, user})
-export const ThunkSingleUser = userId => dispatch =>
-  axios.get(`${server}/api/users/${userId}`)
-    .then( res => dispatch(singleUser(res.data)))
-    .catch( err => console.error('Error from fetching single user', err))
+export const ThunkSingleUser = () => dispatch =>
+    axios.get(`${server}/auth/oauth/me`)
+        .then( res => dispatch(singleUser(res.data || null )))
+        .catch( err => console.error('Error from fetching single user', err))
+
+export const auth = (email, password, method) => dispatch =>
+    axios.post(`${server}/auth/oauth/${method}`, { email, password })
+        .then(res => {
+            dispatch(singleUser(res.data))
+            history.push('/profile')
+        }, authError => {
+            dispatch(singleUser({error: authError}))
+        })
+        .catch(dispatchOrHistoryErr => console.error(dispatchOrHistoryErr))
+
+const LOG_OUT = 'LOG_OUT';
+const logOut = () => ({type: LOG_OUT})
+export const logout = () =>
+    dispatch =>
+        axios.post(`${server}/auth/oauth/logout`)
+        .then(_ => {
+            dispatch(logOut())
+            history.push('/')
+        })
+        .catch(err => console.log(err))
+
 
 const NEW_USER = 'NEW_USER'
 const newUser = user => ({type: NEW_USER, user})
@@ -28,11 +53,13 @@ export const ThunkNewUser = user => dispatch =>
 
 
 
+
 /// trash ///
 
 const ONE_TO_TRASH = 'ONE_TO_TRASH'
 const oneToTrash = user => ({type: ONE_TO_TRASH, user})
 export const ThunkOneToTrash = (userId, postId) => dispatch => {
+    console.log(userId, postId)
  return axios.put(`${server}/api/users/${userId}/onetotrash`, postId)
     .then( res => dispatch(oneToTrash(res.data)))
     .catch( err => console.error('Error from move a post to TRASH', err))
@@ -50,18 +77,24 @@ const RESTORE_ALL = 'RESTORE_ALL';
 const restoreAll = user => ({type:RESTORE_ALL, user})
 export const ThunkRestoreAll = userId => dispatch => {
   return axios.put(`${server}/api/users/${userId}/restoreall`)
-    .then( res => dispatch(restoreOne(res.data)))
+    .then( res => dispatch(restoreAll(res.data)))
     .catch( err => console.error('Error from move a post to TRASH', err))
 }
 
-const EMPTY_TRASH = 'EMPTY_TRASH'
-const emptyTrash = user => ({type: EMPTY_TRASH, user})
+const DELETE_ALL_FOREVER = 'DELETE_ALL_FOREVER'
+const emptyTrash = user => ({type: DELETE_ALL_FOREVER, user})
 export const ThunkEmptyTrash = userId => dispatch =>
   axios.put(`${server}/api/users/${userId}/emptytrash`)
     .then( res => dispatch(emptyTrash(res.data)))
     .catch( err => console.error('Error from emptying the TRASH bin', err))
 
 
+const DELETE_ONE_FOREVER = 'DELETE_ONE_FOREVER'
+const deleteOne = user => ({type: DELETE_ONE_FOREVER, user})
+export const ThunkDeleteOne = userId => dispatch =>
+  axios.put(`${server}/api/users/${userId}/deleteoneforever`)
+    .then( res => dispatch(deleteOne(res.data)))
+    .catch( err => console.error('Error from emptying the TRASH bin', err))
 
 
 
@@ -84,13 +117,13 @@ export const ThunkEditPost = (userId, postId, content) => dispatch =>
 const EMPTY_POSTS = 'EMPTY_POSTS'
 const emptyPosts = user => ({type: EMPTY_POSTS, user})
 export const ThunkEmptyPosts = userId => dispatch =>
-  axios.put(`${server}/api/users/${userId}/emptyposts`)
+  axios.put(`${server}/api/users/${userId}/movealltotrash`)
     .then( res => dispatch(emptyPosts(res.data)))
     .catch( err => console.error('Error from emptying the POSTS bin', err))
 
 
-    
-    
+
+
 
 export default ( state = [] , action) => {
   switch(action.type) {
@@ -98,6 +131,8 @@ export default ( state = [] , action) => {
         return action.users
     case SINGLE_USER:
         return action.user;
+    case LOG_OUT:
+        return null;
     case NEW_POST:
         return action.user;
     case ONE_TO_TRASH:
@@ -105,6 +140,12 @@ export default ( state = [] , action) => {
     case RESTORE_ONE:
         return action.user;
     case RESTORE_ALL:
+        return action.user;
+    case EMPTY_POSTS:
+        return action.user;
+    case DELETE_ALL_FOREVER:
+        return action.user;
+    case DELETE_ONE_FOREVER:
         return action.user;
     default:
         return state;

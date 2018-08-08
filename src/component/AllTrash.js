@@ -1,23 +1,24 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { ThunkRestoreOne, ThunkRestoreAll } from '../store';
+import { ThunkRestoreOne, ThunkRestoreAll, ThunkDeleteOne, ThunkEmptyTrash } from '../store';
 
 
 class AllTrash extends React.Component {
   constructor(){
     super()
 
-    this.restoreOne = this.restoreOne.bind(this)
-    this.restoreAll = this.restoreAll.bind(this)
+    this.handleClick = this.handleClick.bind(this)
+
   }
 
-  restoreOne(postId){
-    this.props.ThunkRestoreOne(postId)
+  handleClick(option, userId, postId){
+    if(option === 'restoreONE') this.props.ThunkRestoreOne(userId, postId)
+    else if(option === 'deleteONE') this.props.ThunkDeleteOne(userId, postId)
+
+    else if(option === 'restoreALL') this.props.ThunkRestoreAll(userId)
+    else if(option === 'deleteALL') this.props.ThunkEmptyTrash(userId)
   }
 
-  restoreAll(){
-    this.props.ThunkRestoreAll()
-  }
 
 
   render(){
@@ -28,6 +29,9 @@ class AllTrash extends React.Component {
 
         <div className="allTrashContainer">
         <h1>ALL Trash</h1>
+        <button onClick={() => this.handleClick('restoreALL', users.id)}>Restore ALL</button>
+        <button onClick={() => this.handleClick('deleteALL', users.id)}>DELETE FOREVER</button>
+
 
         <div className="allTrash">
         {
@@ -37,8 +41,9 @@ class AllTrash extends React.Component {
           ? users.trash.map( (a, i) => {
             return (
               <div className="singleTrash" key={i}>
-                <h3>{a[0]}</h3>
-                <button onClick={() => this.restoreOne(i)}>restore this</button>
+                <h3>{a}</h3>
+                <button onClick={() => this.handleClick('restoreONE', users.id, i)}>restore this</button>
+                <button onClick={() => this.handleClick('deleteONE', users.id, i)}>DELETE ONE FOREVER</button>
               </div>
             )
           })
@@ -61,12 +66,12 @@ const mapState = (state, ownProps) => {
   };
 };
 
-const mapDispatch = (dispatch, ownProps) => {
-  const id = +ownProps.id
+const mapDispatch = (dispatch) => {
   return {
-    ThunkRestoreOne: (postId) => dispatch(ThunkRestoreOne(id, postId)),
-    ThunkRestoreAll: () => dispatch(ThunkRestoreAll())
-
+    ThunkRestoreOne: (userId, postId) => dispatch(ThunkRestoreOne(userId, postId)),
+    ThunkRestoreAll: (userId) => dispatch(ThunkRestoreAll(userId)),
+    ThunkEmptyTrash: (userId) => dispatch(ThunkEmptyTrash(userId)),
+    ThunkDeleteOne: (userId, postId) => dispatch(ThunkDeleteOne(userId, postId))
   }
 }
 

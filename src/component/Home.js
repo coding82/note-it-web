@@ -1,8 +1,9 @@
 import React from 'react';
-import { AllPosts, AllTrash, NewPost, Auth } from './index'
-import { Link } from 'react-router-dom'
 
-export default class Home extends React.Component {
+import {connect} from 'react-redux'
+
+class Home extends React.Component {
+
 
   render(){
     return(
@@ -12,11 +13,26 @@ export default class Home extends React.Component {
         {/* <AllPosts id={this.props.match.params.id}/>
         <AllTrash id={this.props.match.params.id}/>
         <NewPost id={this.props.match.params.id}/> */}
-        <Link to="/auth">Log-in or Sign-up</Link>
+        {
+          this.props.user ?
+          <p>Welcome back! {this.props.user.email}</p> :
+          <p>Please login!</p>
+        }
 
       </dir>
     )
   }
-
 }
+
+const mapState = state => {
+  return {
+    user: state.users
+  }
+}
+
+
+export default connect(mapState)(Home)
+
+
+
 

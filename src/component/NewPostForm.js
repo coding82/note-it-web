@@ -14,11 +14,10 @@ class NewPost extends React.Component {
   }
 
   handleSubmit(event){
-    console.log(this.state)
+    event.preventDefault()
     const content = this.state;
     this.setState({ content: ''});
-    this.props.ThunkNewPost(this.props.id, content)
-    event.preventDefault()
+    this.props.ThunkNewPost(this.props.user.id, content)
   }
 
   handleChange(event){

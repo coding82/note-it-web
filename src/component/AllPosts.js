@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { ThunkOneToTrash, ThunkSingleUser } from '../store';
+import { ThunkOneToTrash, ThunkEmptyPosts } from '../store';
 
 class AllPosts extends React.Component {
 
@@ -10,13 +10,9 @@ class AllPosts extends React.Component {
     this.moveToTrash = this.moveToTrash.bind(this);
   }
 
-  componentDidMount(){
-    this.props.ThunkSingleUser()
-  }
-
-  moveToTrash(postId){
-    console.log(postId)
-    this.props.ThunkOneToTrash(postId)
+  moveToTrash(option, userId, postId){
+    if(option === 'moveALLtoTrash') this.props.ThunkEmptyPosts(userId)
+    else if(option === 'moveONEtoTrash') this.props.ThunkOneToTrash(userId, postId)
 
   }
 
@@ -27,8 +23,10 @@ class AllPosts extends React.Component {
 
         <div className="allPostsContainer">
         <h1>ALL POSTS</h1>
+        <button onClick={() => this.moveToTrash('moveALLtoTrash', users.id)}>DELETE ALL</button>
 
         <div className="allPosts">
+{users && users.posts && console.log(users.posts)}
         {
           users &&
           users.posts &&
@@ -37,8 +35,9 @@ class AllPosts extends React.Component {
             return (
               <div className="singlePost" key={users.posts.indexOf(a)}>
 
-                <h3>{a[0]}</h3>
-                <button onClick={() => this.moveToTrash(i)}>delete</button>
+                <h3>{a}</h3>
+                <button onClick={() => this.moveToTrash('editone', users.id, i)}>edit</button>
+                <button onClick={() => this.moveToTrash('moveONEtoTrash', users.id, i)}>delete</button>
               </div>
             )
           })
@@ -51,18 +50,17 @@ class AllPosts extends React.Component {
     )
   }
 }
-
 const mapState = (state, ownProps) => {
   return {
     users: state.users
   };
 };
 
-const mapDispatch = (dispatch, ownProps) => {
-  const userId = +ownProps.id;
+const mapDispatch = (dispatch) => {
+
   return {
-    ThunkOneToTrash: postId => dispatch(ThunkOneToTrash(userId, postId)),
-    ThunkSingleUser: () => dispatch(ThunkSingleUser(userId))
+    ThunkOneToTrash: (userId, postId) => dispatch(ThunkOneToTrash(userId, postId)),
+    ThunkEmptyPosts: (userId) => dispatch(ThunkEmptyPosts(userId)),
   }
 }
 
